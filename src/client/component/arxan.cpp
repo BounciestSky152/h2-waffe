@@ -65,6 +65,11 @@ namespace arxan
 			for (auto i = 0; i < DBG_FUNCS_COUNT; i++)
 			{
 				dbg_func_procs[i] = ntdll.get_proc<void*>(dbg_funcs_names[i]);
+				if (!dbg_func_procs[i])
+				{
+					continue; // not exported by Wine's ntdll
+				}
+
 				std::memcpy(dbg_func_bytes[i].buffer, dbg_func_procs[i], sizeof(dbg_func_bytes[i].buffer));
 			}
 		}
@@ -73,6 +78,11 @@ namespace arxan
 		{
 			for (auto i = 0; i < DBG_FUNCS_COUNT; i++)
 			{
+				if (!dbg_func_procs[i])
+				{
+					continue;
+				}
+
 				utils::hook::copy(dbg_func_procs[i], dbg_func_bytes[i].buffer, sizeof(dbg_func_bytes[i].buffer));
 			}
 		}
